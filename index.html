@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+
+<title>SARVESH AI</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+html,body{
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  font-family:Arial,sans-serif;
+  background:#02030a;
+  color:#fff;
+}
+
+body{
+  position:relative;
+}
+
+/* FUTURISTIC BACKGROUND */
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  background:
+    radial-gradient(circle at 50% 35%,rgba(0,180,255,.14),transparent 28%),
+    radial-gradient(circle at 20% 80%,rgba(120,50,255,.10),transparent 30%),
+    radial-gradient(circle at 85% 15%,rgba(0,255,220,.08),transparent 25%),
+    linear-gradient(145deg,#02030a,#050817,#02030a);
+  z-index:-3;
+}
+
+body::after{
+  content:"";
+  position:fixed;
+  inset:0;
+  opacity:.35;
+  background-image:
+    radial-gradient(1px 1px at 15% 20%,#fff,transparent),
+    radial-gradient(1px 1px at 75% 25%,#fff,transparent),
+    radial-gradient(1px 1px at 45% 70%,#fff,transparent),
+    radial-gradient(1px 1px at 85% 80%,#fff,transparent),
+    radial-gradient(1px 1px at 30% 90%,#fff,transparent),
+    radial-gradient(1px 1px at 60% 10%,#fff,transparent);
+  background-size:180px 180px;
+  z-index:-2;
+}
+
+/* APP */
+.app{
+  width:100%;
+  height:100%;
+  display:flex;
+  flex-direction:column;
+}
+
+/* HEADER */
+.header{
+  height:76px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 18px;
+  border-bottom:1px solid rgba(0,220,255,.15);
+  background:rgba(2,5,15,.72);
+  backdrop-filter:blur(18px);
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.core{
+  width:38px;
+  height:38px;
+  border-radius:50%;
+  position:relative;
+  background:
+    radial-gradient(circle,#fff 0%,#72edff 12%,#008cff 38%,transparent 70%);
+  box-shadow:
+    0 0 12px #00bfff,
+    0 0 30px rgba(0,180,255,.65);
+  animation:pulse 2.4s infinite ease-in-out;
+}
+
+.core::before,
+.core::after{
+  content:"";
+  position:absolute;
+  inset:-6px;
+  border:1px solid rgba(0,220,255,.55);
+  border-radius:50%;
+}
+
+.core::after{
+  inset:-11px;
+  border-color:rgba(120,80,255,.35);
+  transform:rotate(55deg);
+}
+
+@keyframes pulse{
+  0%,100%{transform:scale(1)}
+  50%{transform:scale(1.08)}
+}
+
+.brand h1{
+  font-size:20px;
+  letter-spacing:3px;
+  font-weight:700;
+}
+
+.brand span{
+  display:block;
+  margin-top:3px;
+  font-size:9px;
+  letter-spacing:3px;
+  color:#68dfff;
+}
+
+/* STATUS */
+.status{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  font-size:9px;
+  letter-spacing:1.5px;
+  color:#72e8ff;
+}
+
+.status-dot{
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:#4dffb2;
+  box-shadow:0 0 10px #4dffb2;
+}
+
+/* CHAT */
+.chat{
+  flex:1;
+  overflow-y:auto;
+  padding:25px 17px 125px;
+  scroll-behavior:smooth;
+}
+
+.welcome{
+  min-height:65vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+}
+
+.welcome-core{
+  width:110px;
+  height:110px;
+  border-radius:50%;
+  margin-bottom:28px;
+  background:
+    radial-gradient(circle,#fff 0%,#75f0ff 8%,#087cff 27%,#3213a0 48%,transparent 70%);
+  box-shadow:
+    0 0 25px #00bfff,
+    0 0 70px rgba(0,150,255,.35),
+    0 0 120px rgba(100,50,255,.2);
+  animation:float 4s infinite ease-in-out;
+}
+
+@keyframes float{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-10px)}
+}
+
+.welcome h2{
+  font-size:28px;
+  letter-spacing:4px;
+  margin-bottom:10px;
+}
+
+.welcome p{
+  max-width:310px;
+  line-height:1.7;
+  color:#8393ad;
+  font-size:13px;
+}
+
+/* MESSAGES */
+.message{
+  max-width:88%;
+  margin:12px 0;
+  padding:13px 15px;
+  border-radius:17px;
+  line-height:1.55;
+  font-size:14px;
+  white-space:pre-wrap;
+}
+
+.user{
+  margin-left:auto;
+  background:linear-gradient(135deg,rgba(0,150,255,.28),rgba(90,50,220,.24));
+  border:1px solid rgba(0,210,255,.25);
+  box-shadow:0 5px 25px rgba(0,120,255,.08);
+}
+
+.ai{
+  margin-right:auto;
+  background:rgba(255,255,255,.045);
+  border:1px solid rgba(255,255,255,.09);
+}
+
+/* INPUT AREA */
+.input-area{
+  position:fixed;
+  left:0;
+  right:0;
+  bottom:0;
+  padding:12px 13px 16px;
+  background:linear-gradient(
+    to top,
+    rgba(2,3,10,.98),
+    rgba(2,3,10,.88),
+    transparent
+  );
+}
+
+.input-box{
+  max-width:700px;
+  margin:auto;
+  min-height:56px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:7px 8px 7px 15px;
+  border-radius:19px;
+  background:rgba(10,16,32,.88);
+  border:1px solid rgba(0,210,255,.25);
+  box-shadow:
+    0 0 25px rgba(0,130,255,.08),
+    inset 0 0 20px rgba(0,150,255,.025);
+  backdrop-filter:blur(18px);
+}
+
+#messageInput{
+  flex:1;
+  min-width:0;
+  border:0;
+  outline:0;
+  background:transparent;
+  color:white;
+  font-size:14px;
+}
+
+#messageInput::placeholder{
+  color:#63738c;
+}
+
+.tool{
+  width:38px;
+  height:38px;
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:13px;
+  background:rgba(255,255,255,.035);
+  color:#8ca1ba;
+  font-size:17px;
+  flex-shrink:0;
+}
+
+.send{
+  width:42px;
+  height:42px;
+  border:0;
+  border-radius:14px;
+  background:linear-gradient(135deg,#008cff,#704cff);
+  color:white;
+  font-size:18px;
+  box-shadow:0 0 18px rgba(0,150,255,.35);
+  flex-shrink:0;
+}
+
+button{
+  cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+}
+
+button:active{
+  transform:scale(.94);
+}
+
+/* MOBILE */
+@media(max-width:500px){
+  .header{
+    height:70px;
+  }
+
+  .brand h1{
+    font-size:18px;
+  }
+
+  .status{
+    font-size:8px;
+  }
+
+  .welcome h2{
+    font-size:24px;
+  }
+
+  .welcome-core{
+    width:90px;
+    height:90px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <header class="header">
+
+    <div class="brand">
+      <div class="core"></div>
+
+      <div>
+        <h1>SARVESH AI</h1>
+        <span>NEURAL INTELLIGENCE</span>
+      </div>
+    </div>
+
+    <div class="status">
+      <div class="status-dot"></div>
+      ONLINE
+    </div>
+
+  </header>
+
+
+  <main class="chat" id="chat">
+
+    <section class="welcome" id="welcome">
+
+      <div class="welcome-core"></div>
+
+      <h2>SARVESH AI</h2>
+
+      <p>
+        Your all-in-one intelligent assistant.
+        Ask questions, create, analyze and explore.
+      </p>
+
+    </section>
+
+  </main>
+
+
+  <div class="input-area">
+
+    <div class="input-box">
+
+      <button class="tool" id="attachBtn" title="Attach">
+        +
+      </button>
+
+      <input
+        id="messageInput"
+        type="text"
+        autocomplete="off"
+        placeholder="Ask Sarvesh AI..."
+      >
+
+      <button class="tool" id="micBtn" title="Voice">
+        ◉
+      </button>
+
+      <button class="send" id="sendBtn" title="Send">
+        ↑
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<script>
+
+const input = document.getElementById("messageInput");
+const sendBtn = document.getElementById("sendBtn");
+const chat = document.getElementById("chat");
+const welcome = document.getElementById("welcome");
+
+function addMessage(text,type){
+
+  if(welcome){
+    welcome.style.display="none";
+  }
+
+  const div=document.createElement("div");
+
+  div.className="message "+type;
+
+  div.textContent=text;
+
+  chat.appendChild(div);
+
+  chat.scrollTop=chat.scrollHeight;
+}
+
+function sendMessage(){
+
+  const text=input.value.trim();
+
+  if(!text) return;
+
+  addMessage(text,"user");
+
+  input.value="";
+
+  /*
+    AI BACKEND WILL BE CONNECTED HERE.
+    We will add the free AI connection
+    after the futuristic interface is finished.
+  */
+
+  setTimeout(()=>{
+    addMessage(
+      "SARVESH AI is ready. AI connection will be connected in the next step.",
+      "ai"
+    );
+  },500);
+}
+
+sendBtn.addEventListener("click",sendMessage);
+
+input.addEventListener("keydown",(e)=>{
+  if(e.key==="Enter"){
+    sendMessage();
+  }
+});
+
+</script>
+
+</body>
+</html>
