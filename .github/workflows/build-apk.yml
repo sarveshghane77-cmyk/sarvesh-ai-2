@@ -21,33 +21,24 @@ jobs:
 
           unzip -q SarveshAI.zip -d extracted
 
-          echo "Searching for SARVESH AI project..."
-
           PROJECT_DIR=""
 
           for dir in $(find extracted -type f -name package.json -not -path "*/node_modules/*" -exec dirname {} \;); do
-
             if [ -f "$dir/capacitor.config.ts" ] || [ -f "$dir/capacitor.config.json" ]; then
               if [ -d "$dir/android" ]; then
                 PROJECT_DIR="$dir"
                 break
               fi
             fi
-
           done
 
           if [ -z "$PROJECT_DIR" ]; then
             echo "ERROR: SARVESH AI project was not found."
-            echo ""
-            echo "Checking extracted files:"
-            find extracted -maxdepth 4 -type f | head -300
             exit 1
           fi
 
-          echo "SARVESH AI project found:"
-          echo "$PROJECT_DIR"
-
           echo "PROJECT_DIR=$PROJECT_DIR" >> "$GITHUB_ENV"
+          echo "Found project: $PROJECT_DIR"
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -56,7 +47,15 @@ jobs:
 
       - name: Install dependencies
         working-directory: ${{ env.PROJECT_DIR }}
-        run: npm install
+        run: |
+          rm -rf node_modules
+          npm install
+
+      - name: Fix executable permissions
+        working-directory: ${{ env.PROJECT_DIR }}
+        run: |
+          chmod +x node_modules/.bin/*
+          chmod +x node_modules/vite/bin/vite.js
 
       - name: Build SARVESH AI
         working-directory: ${{ env.PROJECT_DIR }}
