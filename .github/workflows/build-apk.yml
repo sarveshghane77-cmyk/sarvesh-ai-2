@@ -18,7 +18,6 @@ jobs:
         run: |
           rm -rf extracted
           mkdir extracted
-
           unzip -q SarveshAI.zip -d extracted
 
           PROJECT_DIR=""
@@ -76,21 +75,19 @@ jobs:
 
           if [ -z "$SDKMANAGER" ]; then
             echo "ERROR: sdkmanager was not found."
-            find "$ANDROID_HOME" -maxdepth 5 -type f | head -100
             exit 1
           fi
 
-          echo "Found sdkmanager:"
+          echo "Using sdkmanager:"
           echo "$SDKMANAGER"
-
-          chmod +x "$SDKMANAGER"
 
           SDK_DIR=$(dirname "$SDKMANAGER")
           echo "$SDK_DIR" >> "$GITHUB_PATH"
 
-          yes | "$SDKMANAGER" --licenses > /dev/null || true
+          "$SDKMANAGER" --licenses || true
 
-          "$SDKMANAGER" "platform-tools" \
+          "$SDKMANAGER" \
+            "platform-tools" \
             "platforms;android-36" \
             "build-tools;36.0.0"
 
