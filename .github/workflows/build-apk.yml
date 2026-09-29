@@ -16,35 +16,35 @@ jobs:
 
       - name: Extract SARVESH AI project
         run: |
-          mkdir -p extracted
+          rm -rf extracted
+          mkdir extracted
+
           unzip -q SarveshAI.zip -d extracted
 
           echo "Searching for SARVESH AI project..."
 
           PROJECT_DIR=""
 
-          while IFS= read -r file; do
-            DIR="$(dirname "$file")"
+          for dir in $(find extracted -type f -name package.json -not -path "*/node_modules/*" -exec dirname {} \;); do
 
-            if node -e "
-              const p=require('./$file');
-              process.exit(
-                p.scripts && p.scripts.build ? 0 : 1
-              )
-            " 2>/dev/null; then
-              PROJECT_DIR="$DIR"
-              break
+            if [ -f "$dir/capacitor.config.ts" ] || [ -f "$dir/capacitor.config.json" ]; then
+              if [ -d "$dir/android" ]; then
+                PROJECT_DIR="$dir"
+                break
+              fi
             fi
-          done < <(find extracted -type f -name package.json)
+
+          done
 
           if [ -z "$PROJECT_DIR" ]; then
-            echo "ERROR: Could not find the project package.json"
-            echo "Files found:"
-            find extracted -maxdepth 5 -type f | head -200
+            echo "ERROR: SARVESH AI project was not found."
+            echo ""
+            echo "Checking extracted files:"
+            find extracted -maxdepth 4 -type f | head -300
             exit 1
           fi
 
-          echo "SARVESH AI project found at:"
+          echo "SARVESH AI project found:"
           echo "$PROJECT_DIR"
 
           echo "PROJECT_DIR=$PROJECT_DIR" >> "$GITHUB_ENV"
@@ -58,7 +58,7 @@ jobs:
         working-directory: ${{ env.PROJECT_DIR }}
         run: npm install
 
-      - name: Build web app
+      - name: Build SARVESH AI
         working-directory: ${{ env.PROJECT_DIR }}
         run: npm run build
 
