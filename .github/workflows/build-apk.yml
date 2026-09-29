@@ -19,15 +19,35 @@ jobs:
           mkdir -p extracted
           unzip -q SarveshAI.zip -d extracted
 
-          PROJECT_DIR=$(dirname "$(find extracted -name package.json -type f -print -quit)")
+          echo "Searching for SARVESH AI project..."
 
-          if [ -z "$PROJECT_DIR" ] || [ "$PROJECT_DIR" = "." ]; then
-            echo "ERROR: package.json was not found inside SarveshAI.zip"
+          PROJECT_DIR=""
+
+          while IFS= read -r file; do
+            DIR="$(dirname "$file")"
+
+            if node -e "
+              const p=require('./$file');
+              process.exit(
+                p.scripts && p.scripts.build ? 0 : 1
+              )
+            " 2>/dev/null; then
+              PROJECT_DIR="$DIR"
+              break
+            fi
+          done < <(find extracted -type f -name package.json)
+
+          if [ -z "$PROJECT_DIR" ]; then
+            echo "ERROR: Could not find the project package.json"
+            echo "Files found:"
+            find extracted -maxdepth 5 -type f | head -200
             exit 1
           fi
 
+          echo "SARVESH AI project found at:"
+          echo "$PROJECT_DIR"
+
           echo "PROJECT_DIR=$PROJECT_DIR" >> "$GITHUB_ENV"
-          echo "Found project at: $PROJECT_DIR"
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -55,13 +75,13 @@ jobs:
         working-directory: ${{ env.PROJECT_DIR }}
         run: npx cap sync android
 
-      - name: Build debug APK
+      - name: Build Android APK
         working-directory: ${{ env.PROJECT_DIR }}/android
         run: |
           chmod +x ./gradlew
           ./gradlew assembleDebug
 
-      - name: Upload APK
+      - name: Upload SARVESH AI APK
         uses: actions/upload-artifact@v4
         with:
           name: SARVESH-AI-debug
